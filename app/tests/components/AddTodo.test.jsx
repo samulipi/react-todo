@@ -4,21 +4,37 @@ var expect = require('expect');
 var $ = require('jQuery');
 var TestUtils = require('react-addons-test-utils');
 
-var AddTodo = require('AddTodo');
+var {AddTodo} = require('AddTodo');
 
 describe('AddTodo', () => {
   it('should exist', () => {
     expect(AddTodo).toExist();
   });
 
-  it('should call handleAddTodo if valid todo exist', () => {
+  it('should dispatch ADD_TODO when valid todo text', () => {
+    var action = {
+      type: 'ADD_TODO',
+      text: 'aaa-a'//;
+    }
     var spy = expect.createSpy();
-    var addTodo = TestUtils.renderIntoDocument(<AddTodo handleAddTodo={spy}/>);
+    var addTodo = TestUtils.renderIntoDocument(<AddTodo dispatch={spy}/>);
     var $el = $(ReactDOM.findDOMNode(addTodo));
 
     addTodo.refs.todo.value = 'aaa-a';
     TestUtils.Simulate.submit($el.find('form')[0]);
-    expect(spy).toHaveBeenCalledWith('aaa-a');
+    expect(spy).toHaveBeenCalledWith(action);
+  });
+
+  it('should not dispatch ADD_TODO when invalid todo text', () =>{
+    var todoText = '';
+    var addTodo = TestUtils.renderIntoDocument(<AddTodo dispatch={spy}/>);
+    var $el = $(ReactDOM.findDOMNode(addTodo));
+    var spy = expect.createSpy();
+
+    addTodo.refs.todo.value = todoText;
+    TestUtils.Simulate.submit($el.find('form')[0]);
+
+    expect(spy).toNotHaveBeenCalled();
   });
 
 });
